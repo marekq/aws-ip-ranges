@@ -1,0 +1,29 @@
+﻿AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: An AWS Serverless Specification template describing your function.
+Resources:
+  sgwhitelist:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.7
+      CodeUri: s3://marek-serverless/aws-ip-ranges.zip
+      Description: ''
+      MemorySize: 256
+      Timeout: 30
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'ec2:DescribeSecurityGroups'
+                - 'ec2:RevokeSecurityGroupIngress'
+                - 'ec2:AuthorizeSecurityGroupIngress'
+              Resource: '*'
+      Events:
+        Schedule1:
+          Type: Schedule
+          Properties:
+            Schedule: rate(1 hour)
+      Tracing: Active
+      ReservedConcurrentExecutions: 1
